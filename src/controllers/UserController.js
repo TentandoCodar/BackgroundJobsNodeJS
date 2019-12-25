@@ -1,5 +1,4 @@
-import Mail from "../lib/Mail";
-
+import Queue from '../lib/Queue';
 export default {
     async user(req, res) {
         const {name, email, password} = req.body;
@@ -10,12 +9,8 @@ export default {
             password,
         };
 
-        await Mail.sendMail({
-            from: "Gustavo Silva <gustavosjn2013@gmail.com>",
-            to: `${name} <${email}`,
-            subject: 'Cadastro de usuário',
-            html: `Bom dia ${name}, vamos testar esse sistema de filas`
-        });
+        await Queue.add('RegistrationMail', {user});
+        await Queue.add('UserReport', {user})
         return res.json(user);
     }
 }
